@@ -54,6 +54,12 @@ const navItems = [
     label: "Applications",
     icon: Users,
     role: "admin"
+  },
+  {
+    path: "/admin/notifications",
+    label: "Notifications & Events",
+    icon: Bell,
+    role: "admin"
   }
 ];
 

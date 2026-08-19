@@ -19,6 +19,7 @@ const canSendEmails = Boolean(
 const registerSchema = z.object({
   fullName: z.string().min(3),
   email: z.string().email(),
+  rollNumber: z.string().min(3).optional(),
   mobile: z.string().min(10).max(16),
   password: z.string().min(8).regex(/(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])/, 'Password must include upper, lower, and number'),
   confirmPassword: z.string().min(8)
@@ -32,18 +33,56 @@ const loginSchema = z.object({
 const forgotSchema = z.object({ email: z.string().email() });
 const resetSchema = z.object({ token: z.string(), password: z.string().min(8), confirmPassword: z.string().min(8) }).refine(data => data.password === data.confirmPassword, { message: 'Passwords must match', path: ['confirmPassword'] });
 
+async function generateUniqueRollNumber() {
+  const yearPrefix = new Date().getFullYear().toString().slice(-2);
+  let rollNumber = '';
+  let isUnique = false;
+  let attempts = 0;
+
+  while (!isUnique && attempts < 10) {
+    const suffix = Math.floor(1000 + Math.random() * 9000);
+    rollNumber = `RN${yearPrefix}${suffix}`;
+    const existing = await prisma.student.findUnique({ where: { rollNumber } });
+    isUnique = !existing;
+    attempts += 1;
+  }
+
+  if (!isUnique) {
+    throw new Error('Unable to generate unique roll number');
+  }
+
+  return rollNumber;
+}
+
 router.post('/register', validate(registerSchema), async (req, res, next) => {
-  const { fullName, email, mobile, password } = req.body;
+  const {
+  fullName,
+  email,
+  rollNumber: providedRollNumber,
+  mobile,
+  password
+} = req.body;
   try {
     const existing = await prisma.student.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ success: false, error: 'Email already registered' });
 
     const hashed = await hashPassword(password);
     const verificationToken = canSendEmails ? createToken({ email }, process.env.JWT_SECRET, '1d') : null;
+    const finalRollNumber =
+  providedRollNumber && providedRollNumber.trim() !== ""
+    ? providedRollNumber.trim()
+    : await generateUniqueRollNumber();
+    const rollNumberConflict = await prisma.student.findUnique({
+  where: { rollNumber: finalRollNumber }
+});
+    if (rollNumberConflict) {
+      return res.status(409).json({ success: false, error: 'Roll number already registered' });
+    }
     const student = await prisma.student.create({
       data: {
         fullName,
         email,
+        rollNumber: finalRollNumber,
         mobile,
         passwordHash: hashed,
         role: 'student',

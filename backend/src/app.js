@@ -32,10 +32,12 @@ app.use(
   })
 );
 
+
 app.use(morgan('tiny'));
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 app.use(cookieParser());
+
 const allowedOrigins = [
   'http://localhost:5173',
   process.env.FRONTEND_URL,
@@ -60,9 +62,10 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-app.use('/uploads',express.static(uploadDir, {
+app.use('/uploads',express.static(path.join(__dirname, "../uploads"), {
     setHeaders: (res) => {res.setHeader('Access-Control-Allow-Origin', '*');}
 }));
+app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/admissions', admissionRoutes);

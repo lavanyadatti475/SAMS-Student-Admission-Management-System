@@ -88,7 +88,7 @@ export default function AdmissionWizard() {
             { label: 'Course', key: 'course' },
             { label: 'Branch', key: 'branch' },
             { label: 'Admission Category', key: 'admissionCategory' },
-            { label: 'Previous Institution', key: 'previousInstitution' }
+            { label: 'Present Institution', key: 'presentInstitution' }
           ].map((item) => (
             <label key={item.key} className="block">
               <span className="text-slate-700 dark:text-slate-200">{item.label}</span>

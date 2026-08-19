@@ -9,9 +9,7 @@ import api from "../api/api";
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }) {
 
@@ -20,8 +18,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
 
-    const savedUser =
-      localStorage.getItem("sams_user");
+    const savedUser = localStorage.getItem("sams_user");
 
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -31,16 +28,15 @@ export function AuthProvider({ children }) {
 
   }, []);
 
+  // LOGIN
   const login = async (credentials) => {
 
-    const res =
-      await api.post(
-        "/auth/login",
-        credentials
-      );
+    const res = await api.post(
+      "/auth/login",
+      credentials
+    );
 
-    const userData =
-      res.data.user;
+    const userData = res.data.user;
 
     localStorage.setItem(
       "sams_user",
@@ -59,12 +55,26 @@ export function AuthProvider({ children }) {
     return userData;
   };
 
+  // REGISTER
+  const register = async (data) => {
+
+    const res = await api.post(
+      "/auth/register",
+      data
+    );
+
+    return res.data;
+
+  };
+
+  // LOGOUT
   const logout = () => {
 
     setUser(null);
 
     localStorage.removeItem("token");
     localStorage.removeItem("sams_user");
+
   };
 
   return (
@@ -73,6 +83,7 @@ export function AuthProvider({ children }) {
         user,
         loading,
         login,
+        register,
         logout
       }}
     >

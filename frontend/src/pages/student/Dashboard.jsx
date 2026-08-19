@@ -96,21 +96,21 @@ export default function StudentDashboard() {
       <div className="card-glass p-6 rounded-3xl border-slate-200/70  dark:border-slate-700/70">
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div style={{ width: "150px", height: "150px" }}>
-  <img
-    src={
-      stats?.profilePhoto
-        ? `http://localhost:5000${stats.profilePhoto}`
-        : "https://via.placeholder.com/150"
-    }
-    alt="Student Profile"
-    style={{
-      width: "150px",
-      height: "150px",
-      objectFit: "cover",
-      border: "6px solid #38bdf8",
-      borderRadius: "50%",
-      boxShadow: "0px 0px 25px rgba(14,165,233,0.5)"
-    }}
+ <img
+  src={
+    stats?.profilePhoto ||
+    "https://via.placeholder.com/150"
+  }
+  alt="Profile"
+  className="w-[150px] h-[150px] rounded-full object-cover border-4 border-sky-500"
+  style={{
+    width: "150px",
+    height: "150px",
+    objectFit: "cover",
+    border: "6px solid #38bdf8",
+    borderRadius: "50%",
+    boxShadow: "0px 0px 25px rgba(14,165,233,0.5)"
+  }}
     onLoad={() => console.log("IMAGE LOADED")}
     onError={(e) => {
       console.log("IMAGE ERROR");
@@ -124,6 +124,27 @@ export default function StudentDashboard() {
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
               {stats?.fullName || 'Student'}
             </h2>
+
+            {stats?.rollNumber && (
+    <span
+      className="
+      px-4
+      py-1
+      rounded-full
+      bg-sky-100
+      text-sky-700
+      text-sm
+      font-semibold
+      border
+      border-sky-300
+      dark:bg-sky-900/30
+      dark:text-sky-300
+      dark:border-sky-700
+      "
+    >
+      {stats.rollNumber}
+    </span>
+)}
 
             <p className="text-slate-500 mt-1">
               {stats?.email}

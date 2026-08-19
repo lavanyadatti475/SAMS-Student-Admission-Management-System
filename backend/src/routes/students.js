@@ -8,6 +8,7 @@ const router = express.Router();
 
 const profileSchema = z.object({
 fullName: z.string().min(3).optional(),
+rollNumber: z.string().optional(),
 dob: z.string().optional(),
 gender: z.string().optional(),
 bloodGroup: z.string().optional(),
@@ -105,7 +106,8 @@ const student = await prisma.student.findUnique({
     admissionForm: true,
     uploadedDocuments: true,
     notifications: true,
-    admissionStatus: true
+    admissionStatus: true,
+    academicDetails: true
   }
 });
 
@@ -116,11 +118,12 @@ if (!student) {
   });
 }
 
-const profilePhoto =
-  student.uploadedDocuments.find(
-    (doc) => doc.documentType === 'photograph'
-  );
-
+const profilePhoto = student.uploadedDocuments.find(
+  (doc) =>
+    doc.documentName === "Passport Photo" ||
+    doc.subCategory === "Passport Photo"
+);
+console.log(profilePhoto);
 const completion = Math.min(
   100,
   Math.round(
@@ -141,7 +144,14 @@ res.json({
   success: true,
   data: {
     fullName: student.fullName,
+    rollNumber: student.rollNumber,
     email: student.email,
+    mobile: student.mobile,
+
+    department:
+        student.admissionForm?.branch || 'N/A',
+
+    year: student.batch?.year || 'N/A',
 
     course:
       student.admissionForm?.course || 'N/A',
@@ -149,9 +159,8 @@ res.json({
     branch:
       student.admissionForm?.branch || 'N/A',
 
-    profilePhoto:
-      profilePhoto?.filePath || null,
-
+    profilePhoto: profilePhoto?.publicUrl || null,
+    
     applicationStatus:
       student.admissionStatus?.applicationStatus ||
       'draft',

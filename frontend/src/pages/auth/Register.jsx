@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { UserPlus, Mail, Phone, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function Register() {
-  const [form, setForm] = useState({ fullName: '', email: '', mobile: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({ fullName: '', email: '', mobile: '',rollNumber:'', password: '', confirmPassword: '' });
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState([]);
@@ -12,29 +12,77 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError(null);
-    setValidationErrors([]);
-    setMessage(null);
-    
-    try {
-      const response = await register(form);
-      setMessage(response.message);
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
-    } catch (err) {
-      if (err.errors && Array.isArray(err.errors)) {
-        const errorMessages = err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
-        setValidationErrors(err.errors);
-        setError(errorMessages);
-      } else {
-        setError(err.error || 'Registration failed. Please try again.');
-      }
+
+  event.preventDefault();
+
+  setError(null);
+  setValidationErrors([]);
+  setMessage(null);
+
+  console.log("FORM DATA:");
+  console.log(form);
+
+  try {
+
+    console.log("Calling register...");
+
+    if (form.password !== form.confirmPassword) {
+  setError("Passwords do not match");
+  return;
+}
+
+
+    const response = await register(form);
+
+    console.log("SUCCESS:");
+    console.log(response);
+
+    setMessage(response.message);
+
+    setTimeout(() => {
+      navigate('/login');
+    }, 2000);
+
+  } catch (err) {
+
+    console.log("REGISTER ERROR:");
+    console.log(err);
+
+    console.log("RESPONSE:");
+    console.log(err.response);
+
+    if (err.response) {
+      console.log("SERVER RESPONSE:");
+      console.log(err.response.data);
     }
-  };
+
+    setError(
+
+      err.response?.data?.error ||
+
+      JSON.stringify(err.response?.data) ||
+
+      err.message ||
+
+      "Registration failed"
+
+    );
+
+  }
+
+};
 
   return (
+    <div
+className="
+min-h-screen
+bg-gradient-to-br
+from-purple-50
+via-pink-50
+to-cyan-100
+p-6
+"
+>
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-xl card-glass p-8 rounded-3xl shadow-xl">
         <div className="mb-6">
@@ -48,6 +96,15 @@ export default function Register() {
               <UserPlus size={18} className="text-slate-400" />
               <input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} required className="w-full bg-transparent outline-none text-slate-900 dark:text-slate-100" placeholder="Tejaswini Yerra" />
             </div>
+          </label>
+
+          <label className="block">
+            <span className="text-slate-700 dark:text-slate-200">Roll Number</span>
+            <div className={`mt-2 flex items-center gap-3 rounded-3xl border ${validationErrors.some(e => e.path.includes('rollNumber')) ? 'border-rose-500' : 'border-slate-200'} bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-900`}>
+              <UserPlus size={18} className="text-slate-400" />
+              <input value={form.rollNumber} onChange={(e) => setForm({ ...form, rollNumber: e.target.value })} required className="w-full bg-transparent outline-none text-slate-900 dark:text-slate-100" placeholder="23VV1A1201" />
+            </div>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This is the primary student identifier and must be unique.</p>
           </label>
 
           <label className="block">
@@ -65,7 +122,6 @@ export default function Register() {
               <input value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} required className="w-full bg-transparent outline-none text-slate-900 dark:text-slate-100" placeholder="06301594486" />
             </div>
           </label>
-
           <div className="grid gap-5 md:grid-cols-2">
             <label className="block">
               <span className="text-slate-700 dark:text-slate-200">Password</span>
@@ -110,6 +166,7 @@ export default function Register() {
 
         <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">Already a member? <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700">Sign in</Link></p>
       </div>
+    </div>
     </div>
   );
 }

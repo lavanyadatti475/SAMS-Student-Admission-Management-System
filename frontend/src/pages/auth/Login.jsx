@@ -19,13 +19,15 @@ export default function Login() {
 
   try {
 
-    const user =await login(form);
+   const user = await login(form);
 
-    if(user.role === "admin"){
-      navigate("/admin/dashboard");
-    }else{
-      navigate("/student/dashboard");
-    }
+console.log(user);
+
+if (user.role === "admin") {
+    navigate("/admin/dashboard");
+} else {
+    navigate("/student/dashboard");
+}
 
   } catch(err){
 
@@ -52,19 +54,38 @@ const fadeUp = {
   }
 };
 
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const cardVariant = {
+  hidden: {
+    opacity: 0,
+    y: 50,
+    scale: 0.9,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+}; 
+
 return (
   <div
   className="min-h-screen bg-cover bg-center"
   style={{
-    backgroundImage: `
-    linear-gradient(
-    rgba(59,130,246,0.15),
-    rgba(14,165,233,0.15)
-  ),
-      url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR93UVLl0SKUJ7MXGXTVTQFJEgq6VXZofQIOw&s')
-    `,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center'
+     background:
+      "linear-gradient(135deg, #f0f9ff 0%, #dbeafe 40%, #bfdbfe 100%)"
   }}
 >
     {/* Header */}
@@ -114,58 +135,71 @@ return (
     </div>
 
     {/* Statistics */}
-    <div className="max-w-6xl mx-auto px-6 mt-10">
-      <div className="grid md:grid-cols-4 gap-5">
+<div className="max-w-6xl mx-auto px-6 mt-10">
+  <motion.div
+    className="grid md:grid-cols-4 gap-5"
+    variants={staggerContainer}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true }}
+  >
+    {/* Students */}
+    <motion.div
+      variants={cardVariant}
+      whileHover={{ y: -10, scale: 1.05 }}
+      className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl text-center"
+    >
+      <h2 className="text-4xl font-bold text-sky-600">
+        5000+
+      </h2>
+      <p className="text-slate-600 mt-2">
+        Students
+      </p>
+    </motion.div>
 
-        <motion.div
-  variants={fadeUp}
-  initial="hidden"
-  whileInView="visible"
-  viewport={{ once: true }}
-  whileHover={{
-    y: -10,
-    scale: 1.05
-  }}
-  className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl text-center"
->
-          <h2 className="text-4xl font-bold text-sky-600">
-            5000+
-          </h2>
-          <p className="text-slate-600 mt-2">
-            Students
-          </p>
-        </motion.div>
+    {/* Courses */}
+    <motion.div
+      variants={cardVariant}
+      whileHover={{ y: -10, scale: 1.05 }}
+      className="bg-white rounded-2xl p-6 shadow-lg text-center"
+    >
+      <h2 className="text-4xl font-bold text-green-600">
+        10
+      </h2>
+      <p className="text-slate-600 mt-2">
+        Courses
+      </p>
+    </motion.div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
-          <h2 className="text-4xl font-bold text-green-600">
-            10
-          </h2>
-          <p className="text-slate-600 mt-2">
-            Courses
-          </p>
-        </div>
+    {/* Placement */}
+    <motion.div
+      variants={cardVariant}
+      whileHover={{ y: -10, scale: 1.05 }}
+      className="bg-white rounded-2xl p-6 shadow-lg text-center"
+    >
+      <h2 className="text-4xl font-bold text-purple-600">
+        88%
+      </h2>
+      <p className="text-slate-600 mt-2">
+        Placement Rate
+      </p>
+    </motion.div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
-          <h2 className="text-4xl font-bold text-purple-600">
-            88%
-          </h2>
-          <p className="text-slate-600 mt-2">
-            Placement Rate
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
-          <h2 className="text-4xl font-bold text-orange-500">
-            24/7
-          </h2>
-          <p className="text-slate-600 mt-2">
-            Support
-          </p>
-        </div>
-
-      </div>
-    </div>
-
+    {/* Support */}
+    <motion.div
+      variants={cardVariant}
+      whileHover={{ y: -10, scale: 1.05 }}
+      className="bg-white rounded-2xl p-6 shadow-lg text-center"
+    >
+      <h2 className="text-4xl font-bold text-orange-500">
+        24/7
+      </h2>
+      <p className="text-slate-600 mt-2">
+        Support
+      </p>
+    </motion.div>
+  </motion.div>
+</div>
     {/* Login Card */}
     <div className="max-w-lg mx-auto mt-12 px-6">
 
