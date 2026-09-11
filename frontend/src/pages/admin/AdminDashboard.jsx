@@ -73,7 +73,7 @@ return (
 
     <div className="flex justify-end">
       <a
-        href="http://localhost:5000/api/reports/students-csv"
+        href={`${import.meta.env.VITE_API_URL}/reports/students-csv`}
         target="_blank"
         rel="noreferrer"
         className="

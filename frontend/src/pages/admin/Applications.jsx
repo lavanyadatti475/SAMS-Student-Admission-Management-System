@@ -679,7 +679,7 @@ text-slate-800">
       </div>
 
       <a
-        href={doc.publicUrl || `http://localhost:5000${doc.filePath}`}
+        href={doc.publicUrl || `${import.meta.env.VITE_API_URL}${doc.filePath}`}
         target="_blank"
         rel="noreferrer"
         className="rounded-lg bg-blue-600 px-3 py-1 text-white hover:bg-blue-700"
