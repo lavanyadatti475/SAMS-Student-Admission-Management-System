@@ -29,7 +29,6 @@
     "nodemailer": "^9.0.0",
     "phantomjs-prebuilt": "^2.1.5",
     "uuid": "^14.0.1",
-    "vite": "8.0.16",
     "zod": "^3.23.2"
   },
   "devDependencies": {
