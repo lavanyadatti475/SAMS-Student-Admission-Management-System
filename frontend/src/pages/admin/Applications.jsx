@@ -164,7 +164,8 @@ const applyFilters = () => {
       'Mechanical',
       'EEE',
       'Metallurgy',
-      'Civil'
+      'Civil',
+      'pharmacy'
     ];
   }, []);
 
