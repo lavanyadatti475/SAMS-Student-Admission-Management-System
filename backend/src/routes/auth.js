@@ -252,7 +252,7 @@ router.get('/debug-admin-password', async (req, res, next) => {
     }
 
     const matches = await comparePassword(
-      'Superadmin@1234',
+      'SuperAdmin@2026',
       admin.passwordHash
     );
 
