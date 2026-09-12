@@ -137,10 +137,22 @@ router.post('/login', validate(loginSchema), async (req, res, next) => {
       userType = 'admin';
     }
 
+    console.log('LOGIN USER LOOKUP:', {
+  email,
+  userType,
+  found: !!user
+});
+
     if (!user) return res.status(401).json({ success: false, error: 'Invalid credentials' });
     if (userType === 'student' && !user.emailVerified) return res.status(403).json({ success: false, error: 'Please verify your email before login' });
 
     const valid = await comparePassword(password, user.passwordHash);
+    console.log('LOGIN DEBUG:', {
+  email,
+  userType,
+  userFound: !!user,
+  passwordMatches: valid
+});
     if (!valid) return res.status(401).json({ success: false, error: 'Invalid credentials' });
 
     const tokens = authTokens(user);
