@@ -232,4 +232,37 @@ router.get('/debug-admin', async (req, res, next) => {
     next(error);
   }
 });
+
+router.get('/debug-admin-password', async (req, res, next) => {
+  try {
+    const admin = await prisma.admin.findUnique({
+      where: {
+        email: 'superadmin@sams.edu'
+      },
+      select: {
+        email: true,
+        passwordHash: true
+      }
+    });
+
+    if (!admin) {
+      return res.json({
+        exists: false
+      });
+    }
+
+    const matches = await comparePassword(
+      'superadmin123',
+      admin.passwordHash
+    );
+
+    res.json({
+      exists: true,
+      passwordMatches: matches
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
