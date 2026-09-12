@@ -201,4 +201,25 @@ router.post('/reset-password', validate(resetSchema), async (req, res, next) => 
   }
 });
 
+router.get('/debug-admin', async (req, res, next) => {
+  try {
+    const admin = await prisma.admin.findUnique({
+      where: {
+        email: 'superadmin@sams.edu'
+      },
+      select: {
+        email: true,
+        role: true
+      }
+    });
+
+    res.json({
+      exists: !!admin,
+      admin: admin || null
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
