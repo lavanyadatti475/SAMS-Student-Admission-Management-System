@@ -209,17 +209,27 @@ router.get('/debug-admin', async (req, res, next) => {
       },
       select: {
         email: true,
-        role: true
+        role: true,
+        passwordHash: true
       }
     });
 
+    if (!admin) {
+      return res.json({
+        exists: false
+      });
+    }
+
     res.json({
-      exists: !!admin,
-      admin: admin || null
+      exists: true,
+      email: admin.email,
+      role: admin.role,
+      passwordHashExists: !!admin.passwordHash,
+      passwordHashLength: admin.passwordHash?.length || 0,
+      passwordHashPrefix: admin.passwordHash?.substring(0, 4) || null
     });
   } catch (error) {
     next(error);
   }
 });
-
 module.exports = router;
